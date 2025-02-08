@@ -1,48 +1,51 @@
-# Python Platformer
+# Simple Platformer
 
-This is a simple platformer game built using Python and Pygame.
-
-## Features
-
-- Player character with movement and jumping abilities
-- Various objects including blocks and fire traps
-- Scrolling background
-- Collision detection
+This is a simple side-scrolling platformer game built using Python and Pygame.
 
 ## Requirements
 
-- Python 3.12.4
+- Python 3.10.0
 - Pygame
 
-## Installation
+You can install the required dependencies using the following command:
 
-1. Clone the repository:
+```sh
+pip install -r requirements.txt
+```
 
-    ```sh
-    git clone https://github.com/Halip26/python-platformer.git
-    ```
+## How to Run
 
-2. Navigate to the project directory:
-
-    ```sh
-    cd python-platformer
-    ```
-
-3. Install the required dependencies:
-
-    ```sh
-    pip install -r requirements.txt
-    ```
-
-## Usage
-
-Run the game using the following command:
+To run the game, execute the following command:
 
 ```sh
 python main.py
-
 ```
 
-## LICENSE
+## Game Controls
+
+- **Left Arrow**: Move left
+- **Right Arrow**: Move right
+- **Up Arrow**: Jump
+
+## Game Structure
+
+### Player
+
+The Player class represents the player character. It is a subclass of pygame.sprite.Sprite and includes methods for movement, jumping, and gravity.
+
+### Platform
+
+The Platform class represents the platforms that the player can jump on. It is also a subclass of pygame.sprite.Sprite.
+
+### Level
+
+The Level class is a generic superclass used to define a level. It includes methods for updating and drawing the level, as well as shifting the world when the player moves.
+
+### Levels
+
+- Level_01 : Definition for level 1
+- Level_02 : Definition for level 2.
+
+## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
