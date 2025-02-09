@@ -1,6 +1,10 @@
 # Simple Platformer
 
-This is a simple side-scrolling platformer game built using Python and Pygame.
+This is a simple side-scrolling platformer game built using Python's Pygame Library.
+
+## Preview
+
+![sceenshot](assets/preview.png)
 
 ## Requirements
 
