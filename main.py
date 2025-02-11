@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # Global constants
 
@@ -8,6 +9,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
 
 # Screen dimensions
 SCREEN_WIDTH = 800
@@ -35,6 +37,12 @@ class Player(pygame.sprite.Sprite):
 
         # List of sprites we can bump against
         self.level = None
+
+        # Player score
+        self.score = 0
+
+        # Player life
+        self.life = 5
 
     def update(self):
         """Update player position"""
@@ -68,6 +76,14 @@ class Player(pygame.sprite.Sprite):
 
             # Stop vertical movement
             self.change_y = 0
+
+        # Check if player falls off the screen
+        if self.rect.y > SCREEN_HEIGHT:
+            self.life -= 1
+            self.rect.y = 0
+            if self.life <= 0:
+                self.life = 0
+                # Game over logic can be added here
 
     def calc_grav(self):
         """Calculate gravity effect"""
@@ -119,6 +135,22 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 
+class Coin(pygame.sprite.Sprite):
+    """Coin that the player can collect"""
+
+    def __init__(self):
+        """Initialize coin"""
+        super().__init__()
+
+        # Create a circular coin image
+        radius = 10
+        self.image = pygame.Surface([radius * 2, radius * 2], pygame.SRCALPHA)
+        pygame.draw.circle(self.image, YELLOW, (radius, radius), radius)
+
+        # Set a reference to the image rect
+        self.rect = self.image.get_rect()
+
+
 class Level:
     """Generic level class"""
 
@@ -126,6 +158,7 @@ class Level:
         """Initialize level"""
         self.platform_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
+        self.coin_list = pygame.sprite.Group()
         self.player = player
 
         # World shift
@@ -138,12 +171,19 @@ class Level:
         """Update level"""
         self.platform_list.update()
         self.enemy_list.update()
+        self.coin_list.update()
+
+        # Check for coin collection
+        coin_hit_list = pygame.sprite.spritecollide(self.player, self.coin_list, True)
+        for coin in coin_hit_list:
+            self.player.score += 1
 
     def draw(self, screen):
         """Draw level"""
         screen.blit(self.background, (0, 0))
         self.platform_list.draw(screen)
         self.enemy_list.draw(screen)
+        self.coin_list.draw(screen)
 
     def shift_world(self, shift_x):
         """Shift the world"""
@@ -154,6 +194,9 @@ class Level:
 
         for enemy in self.enemy_list:
             enemy.rect.x += shift_x
+
+        for coin in self.coin_list:
+            coin.rect.x += shift_x
 
 
 class Level_01(Level):
@@ -169,10 +212,12 @@ class Level_01(Level):
         level = [
             [210, 70, 500, 500],
             [210, 70, 800, 400],
-            [210, 70, 1100, 300],
-            [210, 70, 1360, 380],
-            [210, 70, 1600, 250],
-            [210, 70, 1900, 350],
+            [210, 70, 1100, 500],
+            [210, 70, 1390, 380],
+            [210, 70, 1700, 280],
+            [210, 70, 2000, 500],
+            [210, 70, 2300, 440],
+            [350, 70, 2600, 360],
         ]
 
         for platform in level:
@@ -181,6 +226,13 @@ class Level_01(Level):
             block.rect.y = platform[3]
             block.player = self.player
             self.platform_list.add(block)
+
+        # Add coins
+        for platform in level:
+            coin = Coin()
+            coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+            coin.rect.y = platform[3] - 30
+            self.coin_list.add(coin)
 
 
 class Level_02(Level):
@@ -195,9 +247,11 @@ class Level_02(Level):
         # Platform layout
         level = [
             [210, 30, 450, 570],
-            [210, 30, 720, 460],
+            [210, 30, 720, 400],
             [210, 30, 900, 520],
             [210, 30, 1100, 280],
+            [210, 30, 1400, 180],
+            [210, 30, 1700, 380],
         ]
 
         for platform in level:
@@ -206,6 +260,47 @@ class Level_02(Level):
             block.rect.y = platform[3]
             block.player = self.player
             self.platform_list.add(block)
+
+        # Add coins
+        for platform in level:
+            
+            coin = Coin()
+            coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+            coin.rect.y = platform[3] - 30
+            self.coin_list.add(coin)
+class Level_03(Level):
+    """Level 3"""
+
+    def __init__(self, player):
+        """Create level 3"""
+        Level.__init__(self, player)
+
+        self.level_limit = -2000
+
+        # Platform layout
+        level = [
+            [210, 50, 450, 570],
+            [210, 50, 720, 400],
+            [210, 50, 900, 520],
+            [210, 50, 1100, 280],
+            [210, 50, 1400, 180],
+            [210, 50, 1700, 380],
+        ]
+
+        for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+        # Add coins
+        for platform in level:
+            
+            coin = Coin()
+            coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+            coin.rect.y = platform[3] - 30
+            self.coin_list.add(coin)
 
 
 def main():
@@ -239,6 +334,9 @@ def main():
 
     done = False
     clock = pygame.time.Clock()
+
+    # Font for displaying score and life
+    font = pygame.font.Font(None, 36)
 
     # Main game loop
     while not done:
@@ -290,6 +388,12 @@ def main():
         # Draw everything
         current_level.draw(screen)
         active_sprite_list.draw(screen)
+
+        # Display score and life
+        score_text = font.render(f"Coins: {player.score}", True, BLACK)
+        life_text = font.render(f"Life: {player.life}", True, BLACK)
+        screen.blit(score_text, (10, 10))
+        screen.blit(life_text, (10, 50))
 
         # Limit to 60 frames per second
         clock.tick(60)
