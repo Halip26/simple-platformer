@@ -263,40 +263,6 @@ class Level_02(Level):
 
         # Add coins
         for platform in level:
-            
-            coin = Coin()
-            coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
-            coin.rect.y = platform[3] - 30
-            self.coin_list.add(coin)
-class Level_03(Level):
-    """Level 3"""
-
-    def __init__(self, player):
-        """Create level 3"""
-        Level.__init__(self, player)
-
-        self.level_limit = -2000
-
-        # Platform layout
-        level = [
-            [210, 50, 450, 570],
-            [210, 50, 720, 400],
-            [210, 50, 900, 520],
-            [210, 50, 1100, 280],
-            [210, 50, 1400, 180],
-            [210, 50, 1700, 380],
-        ]
-
-        for platform in level:
-            block = Platform(platform[0], platform[1])
-            block.rect.x = platform[2]
-            block.rect.y = platform[3]
-            block.player = self.player
-            self.platform_list.add(block)
-
-        # Add coins
-        for platform in level:
-            
             coin = Coin()
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
             coin.rect.y = platform[3] - 30
