@@ -10,6 +10,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
+ORANGE = (255, 165, 0)
 
 # Screen dimensions
 SCREEN_WIDTH = 800
@@ -83,7 +84,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = 0
             if self.life <= 0:
                 self.life = 0
-                # Game over logic can be added here
+                # later we can add game over logic down here
 
     def calc_grav(self):
         """Calculate gravity effect"""
@@ -130,7 +131,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()  # super() means allow you to refer to the parent class
 
         self.image = pygame.Surface([width, height])
-        self.image.fill(RED)
+        self.image.fill(ORANGE)
 
         self.rect = self.image.get_rect()
 
@@ -203,21 +204,22 @@ class Level_01(Level):
     """Level 1"""
 
     def __init__(self, player):
-        """Create level 1"""
+        """Create Level 1"""
         Level.__init__(self, player)
 
-        self.level_limit = -2000
+        self.level_limit = -1000
 
-        # Platform layout
+        # Platform Layout
         level = [
-            [210, 70, 500, 500],
-            [210, 70, 800, 400],
-            [210, 70, 1100, 500],
-            [210, 70, 1390, 380],
-            [210, 70, 1700, 280],
-            [210, 70, 2000, 500],
-            [210, 70, 2300, 440],
-            [350, 70, 2600, 360],
+            [210, 30, 220, 520],
+            [210, 30, 500, 450],
+            [210, 30, 800, 400],
+            [210, 30, 1100, 500],
+            [210, 30, 1390, 380],
+            [210, 30, 1700, 280],
+            [210, 30, 2000, 500],
+            [210, 30, 2300, 440],
+            [210, 30, 2600, 360],
         ]
 
         for platform in level:
@@ -227,8 +229,11 @@ class Level_01(Level):
             block.player = self.player
             self.platform_list.add(block)
 
-        # Add coins
-        for platform in level:
+        # Add Coins (Randomly choose 1 to 4 platforms for coins)
+        num_coins = random.randint(1, min(4, len(level)))
+        selected_platforms = random.sample(level, num_coins)
+
+        for platform in selected_platforms:
             coin = Coin()
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
             coin.rect.y = platform[3] - 30
@@ -239,17 +244,17 @@ class Level_02(Level):
     """Level 2"""
 
     def __init__(self, player):
-        """Create level 2"""
+        """Create Level 2"""
         Level.__init__(self, player)
 
-        self.level_limit = -2000
+        self.level_limit = -1000
 
-        # Platform layout
+        # Platform Layout
         level = [
-            [210, 30, 450, 570],
-            [210, 30, 720, 400],
-            [210, 30, 900, 520],
-            [210, 30, 1100, 280],
+            [210, 30, 350, 470],
+            [210, 30, 620, 380],
+            [210, 30, 900, 420],
+            [210, 30, 1100, 290],
             [210, 30, 1400, 180],
             [210, 30, 1700, 380],
         ]
@@ -261,8 +266,119 @@ class Level_02(Level):
             block.player = self.player
             self.platform_list.add(block)
 
-        # Add coins
+        # Add Coins (Randomly choose 1 to 4 platforms for coins)
+        num_coins = random.randint(1, min(4, len(level)))
+        selected_platforms = random.sample(level, num_coins)
+
+        for platform in selected_platforms:
+            coin = Coin()
+            coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+            coin.rect.y = platform[3] - 30
+            self.coin_list.add(coin)
+
+
+class Level_03(Level):
+    """Level 3"""
+
+    def __init__(self, player):
+        """Create level 3"""
+        Level.__init__(self, player)
+
+        self.level_limit = -2000
+
+        # Platform layout
+        level = [
+            [210, 30, 500, 500],
+            [210, 30, 800, 400],
+            [210, 30, 1100, 300],
+            [210, 30, 1360, 380],
+            [210, 30, 1600, 250],
+            [210, 30, 1900, 350],
+        ]
+
         for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+        # Add Coins (Randomly choose 1 to 4 platforms for coins)
+        num_coins = random.randint(1, min(4, len(level)))
+        selected_platforms = random.sample(level, num_coins)
+
+        for platform in selected_platforms:
+            coin = Coin()
+            coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+            coin.rect.y = platform[3] - 30
+            self.coin_list.add(coin)
+
+
+class Level_04(Level):
+    """Level 4"""
+
+    def __init__(self, player):
+        """Create level 4"""
+        Level.__init__(self, player)
+
+        self.level_limit = -2000
+
+        # Platform layout
+        level = [
+            [210, 30, 450, 570],
+            [210, 30, 720, 460],
+            [210, 30, 900, 520],
+            [210, 30, 1100, 280],
+        ]
+
+        for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+        # Add Coins (Randomly choose 1 to 4 platforms for coins)
+        num_coins = random.randint(1, min(4, len(level)))
+        selected_platforms = random.sample(level, num_coins)
+
+        for platform in selected_platforms:
+            coin = Coin()
+            coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+            coin.rect.y = platform[3] - 30
+            self.coin_list.add(coin)
+
+class Level_05(Level):
+    """Level 5"""
+
+    def __init__(self, player):
+        """Create level 5"""
+        Level.__init__(self, player)
+
+        self.level_limit = -2000
+
+        # Platform layout
+        level = [
+            [210, 30, 500, 500],
+            [210, 30, 800, 400],
+            [210, 30, 1100, 300],
+            [210, 30, 1360, 380],
+            [210, 30, 1600, 250],
+            [210, 30, 1900, 350],
+        ]
+
+        for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+        # Add Coins (Randomly choose 1 to 4 platforms for coins)
+        num_coins = random.randint(1, min(4, len(level)))
+        selected_platforms = random.sample(level, num_coins)
+
+        for platform in selected_platforms:
             coin = Coin()
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
             coin.rect.y = platform[3] - 30
@@ -286,6 +402,9 @@ def main():
     level_list = []
     level_list.append(Level_01(player))
     level_list.append(Level_02(player))
+    level_list.append(Level_03(player))
+    level_list.append(Level_04(player))
+    level_list.append(Level_05(player))
 
     # Set current level
     current_level_no = 0
@@ -301,7 +420,7 @@ def main():
     done = False
     clock = pygame.time.Clock()
 
-    # Font for displaying score and life
+    # Font for displaying score, life, and level
     font = pygame.font.Font(None, 36)
 
     # Main game loop
