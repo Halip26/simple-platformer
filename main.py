@@ -78,13 +78,13 @@ class Player(pygame.sprite.Sprite):
             # Stop vertical movement
             self.change_y = 0
 
-        # Check if player falls off the screen
-        if self.rect.y > SCREEN_HEIGHT:
+        # Check if player touches lava
+        if pygame.sprite.collide_rect(self, self.level.lava):
             self.life -= 1
-            self.rect.y = 0
+            self.rect.y = 0  # Reset player position
             if self.life <= 0:
                 self.life = 0
-                # later we can add game over logic down here
+                # Game over logic can be added here
 
     def calc_grav(self):
         """Calculate gravity effect"""
@@ -128,7 +128,7 @@ class Platform(pygame.sprite.Sprite):
 
     def __init__(self, width, height):
         """Initialize platform"""
-        super().__init__()  # super() means allow you to refer to the parent class
+        super().__init__()
 
         self.image = pygame.Surface([width, height])
         self.image.fill(ORANGE)
@@ -152,6 +152,20 @@ class Coin(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 
+class Lava(pygame.sprite.Sprite):
+    """Lava at the bottom of the screen"""
+
+    def __init__(self):
+        """Initialize lava"""
+        super().__init__()
+
+        self.image = pygame.Surface([SCREEN_WIDTH, 20])
+        self.image.fill(RED)
+
+        self.rect = self.image.get_rect()
+        self.rect.y = SCREEN_HEIGHT - 20
+
+
 class Level:
     """Generic level class"""
 
@@ -161,6 +175,9 @@ class Level:
         self.enemy_list = pygame.sprite.Group()
         self.coin_list = pygame.sprite.Group()
         self.player = player
+
+        # Lava
+        self.lava = Lava()
 
         # World shift
         self.world_shift = 0
@@ -185,6 +202,7 @@ class Level:
         self.platform_list.draw(screen)
         self.enemy_list.draw(screen)
         self.coin_list.draw(screen)
+        screen.blit(self.lava.image, self.lava.rect)
 
     def shift_world(self, shift_x):
         """Shift the world"""
@@ -207,7 +225,7 @@ class Level_01(Level):
         """Create Level 1"""
         Level.__init__(self, player)
 
-        self.level_limit = -1000
+        self.level_limit = -2000
 
         # Platform Layout
         level = [
@@ -247,7 +265,7 @@ class Level_02(Level):
         """Create Level 2"""
         Level.__init__(self, player)
 
-        self.level_limit = -1000
+        self.level_limit = -2000
 
         # Platform Layout
         level = [
@@ -257,6 +275,8 @@ class Level_02(Level):
             [210, 30, 1100, 290],
             [210, 30, 1400, 180],
             [210, 30, 1700, 380],
+            [210, 30, 2100, 430],
+            [210, 30, 2400, 490],
         ]
 
         for platform in level:
@@ -288,12 +308,16 @@ class Level_03(Level):
 
         # Platform layout
         level = [
+            [210, 30, 150, 550],
             [210, 30, 500, 500],
             [210, 30, 800, 400],
             [210, 30, 1100, 300],
             [210, 30, 1360, 380],
             [210, 30, 1600, 250],
             [210, 30, 1900, 350],
+            [210, 30, 2200, 300],
+            [210, 30, 2550, 400],
+            
         ]
 
         for platform in level:
@@ -325,9 +349,10 @@ class Level_04(Level):
 
         # Platform layout
         level = [
-            [210, 30, 450, 570],
-            [210, 30, 720, 460],
-            [210, 30, 900, 520],
+            [210, 30, 360, 550],
+            [210, 30, 500, 500],
+            [210, 30, 630, 460],
+            [210, 30, 900, 400],
             [210, 30, 1100, 280],
         ]
 
@@ -347,6 +372,7 @@ class Level_04(Level):
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
             coin.rect.y = platform[3] - 30
             self.coin_list.add(coin)
+
 
 class Level_05(Level):
     """Level 5"""
@@ -474,11 +500,13 @@ def main():
         current_level.draw(screen)
         active_sprite_list.draw(screen)
 
-        # Display score and life
+        # Display score, life, and level
         score_text = font.render(f"Coins: {player.score}", True, BLACK)
         life_text = font.render(f"Life: {player.life}", True, BLACK)
+        level_text = font.render(f"Level: {current_level_no + 1}", True, BLACK)
         screen.blit(score_text, (10, 10))
         screen.blit(life_text, (10, 50))
+        screen.blit(level_text, (SCREEN_WIDTH // 2 - 50, 10))
 
         # Limit to 60 frames per second
         clock.tick(60)
