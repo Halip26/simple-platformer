@@ -128,6 +128,7 @@ class Platform(pygame.sprite.Sprite):
 
     def __init__(self, width, height):
         """Initialize platform"""
+        # super() means allow you to refer to the parent class
         super().__init__()
 
         self.image = pygame.Surface([width, height])
@@ -157,13 +158,28 @@ class Lava(pygame.sprite.Sprite):
 
     def __init__(self):
         """Initialize lava"""
-        super().__init__()
+        super().__init__()  # allow you to refer to the parent class
 
         self.image = pygame.Surface([SCREEN_WIDTH, 20])
         self.image.fill(RED)
 
         self.rect = self.image.get_rect()
         self.rect.y = SCREEN_HEIGHT - 20
+
+
+class Spike(pygame.sprite.Sprite):
+    """Spike that hurts the player"""
+
+    def __init__(self):
+        """Initialize spike"""
+        super().__init__()  # allow you to refer to the parent class
+
+        # Create a triangular spike image
+        self.image = pygame.Surface([20, 20], pygame.SRCALPHA)
+        pygame.draw.polygon(self.image, RED, [(10, 0), (0, 20), (20, 20)])
+
+        # Set a reference to the image rect
+        self.rect = self.image.get_rect()
 
 
 class Level:
@@ -175,6 +191,7 @@ class Level:
         self.enemy_list = pygame.sprite.Group()
         self.coin_list = pygame.sprite.Group()
         self.player = player
+        self.spike_list = pygame.sprite.Group()
 
         # Lava
         self.lava = Lava()
@@ -190,11 +207,23 @@ class Level:
         self.platform_list.update()
         self.enemy_list.update()
         self.coin_list.update()
+        self.spike_list.update()
 
         # Check for coin collection
         coin_hit_list = pygame.sprite.spritecollide(self.player, self.coin_list, True)
         for coin in coin_hit_list:
             self.player.score += 1
+
+        # Check for spike collision
+        spike_hit_list = pygame.sprite.spritecollide(
+            self.player, self.spike_list, False
+        )
+        for spike in spike_hit_list:
+            self.player.life -= 1
+            self.player.rect.y = 0  # Reset player position
+            if self.player.life <= 0:
+                self.player.life = 0
+                # Game over logic can be added here
 
     def draw(self, screen):
         """Draw level"""
@@ -202,7 +231,10 @@ class Level:
         self.platform_list.draw(screen)
         self.enemy_list.draw(screen)
         self.coin_list.draw(screen)
+        # Draw lava
         screen.blit(self.lava.image, self.lava.rect)
+        # Draw spikes
+        self.spike_list.draw(screen)
 
     def shift_world(self, shift_x):
         """Shift the world"""
@@ -216,6 +248,9 @@ class Level:
 
         for coin in self.coin_list:
             coin.rect.x += shift_x
+
+        for spike in self.spike_list:
+            spike.rect.x += shift_x
 
 
 class Level_01(Level):
@@ -308,16 +343,15 @@ class Level_03(Level):
 
         # Platform layout
         level = [
-            [210, 30, 150, 550],
-            [210, 30, 500, 500],
-            [210, 30, 800, 400],
-            [210, 30, 1100, 300],
-            [210, 30, 1360, 380],
+            [210, 30, 150, 550],  # 0
+            [210, 30, 500, 500],  # 1
+            [210, 30, 800, 400],  # 2
+            [210, 30, 1100, 300],  # 3
+            [210, 30, 1360, 380],  # 4
             [210, 30, 1600, 250],
             [210, 30, 1900, 350],
             [210, 30, 2200, 300],
             [210, 30, 2550, 270],
-            
         ]
 
         for platform in level:
@@ -336,6 +370,28 @@ class Level_03(Level):
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
             coin.rect.y = platform[3] - 30
             self.coin_list.add(coin)
+
+        # Add spikes
+        # for platform in level:
+        #     if random.choice([True, False]):  # Randomly place spikes
+        #         spike = Spike()
+        #         spike.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+        #         spike.rect.y = platform[3] - 20
+        #         self.spike_list.add(spike)
+
+        # Add spike above the fourth platform
+        fourth_platform = level[3]
+        spike = Spike()
+        spike.rect.x = fourth_platform[2] + 50
+        spike.rect.y = fourth_platform[3] - 20  # Adjust the y-coordinate as needed
+        self.spike_list.add(spike)
+
+        # Add spike above the fifth platform
+        fifth_platform = level[4]
+        spike = Spike()
+        spike.rect.x = fifth_platform[2] + 80
+        spike.rect.y = fifth_platform[3] - 20  # Adjust the y-coordinate as needed
+        self.spike_list.add(spike)
 
 
 class Level_04(Level):
@@ -356,8 +412,8 @@ class Level_04(Level):
             [210, 30, 1300, 180],
             [210, 30, 1900, 220],
             [210, 30, 2200, 175],
-            [210, 30, 2800, 280],
-            [210, 30, 3300, 250],
+            [210, 30, 2600, 210],
+            [210, 30, 3000, 250],
         ]
 
         for platform in level:
@@ -376,6 +432,14 @@ class Level_04(Level):
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
             coin.rect.y = platform[3] - 30
             self.coin_list.add(coin)
+
+        # Add spikes
+        for platform in level:
+            if random.choice([True, False]):  # Randomly place spikes
+                spike = Spike()
+                spike.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+                spike.rect.y = platform[3] - 20
+                self.spike_list.add(spike)
 
 
 class Level_05(Level):
@@ -414,10 +478,24 @@ class Level_05(Level):
             coin.rect.y = platform[3] - 30
             self.coin_list.add(coin)
 
+        # Add spikes
+        for platform in level:
+            if random.choice([True, False]):  # Randomly place spikes
+                spike = Spike()
+                spike.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+                spike.rect.y = platform[3] - 20
+                self.spike_list.add(spike)
+
 
 def main():
     """Main program"""
     pygame.init()
+
+    # Initialize mixer and load background music
+    pygame.mixer.init()
+    pygame.mixer.music.load("assets/bg-music.mp3")  # ensure the file path is correct
+    pygame.mixer.music.set_volume(0.1)  # set volume to 10%
+    pygame.mixer.music.play(-1)  # play music in an infinite loop
 
     # Set screen size
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
@@ -443,7 +521,9 @@ def main():
     active_sprite_list = pygame.sprite.Group()
     player.level = current_level
 
-    player.rect.x = 340
+    # X-coordinate of the spawn point
+    player.rect.x = 240
+    # Y-coordinate of the spawn point
     player.rect.y = SCREEN_HEIGHT - player.rect.height
     active_sprite_list.add(player)
 
