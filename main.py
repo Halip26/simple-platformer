@@ -43,7 +43,7 @@ class Player(pygame.sprite.Sprite):
         self.score = 0
 
         # Player life
-        self.life = 5
+        self.life = 5 + 1
 
     def update(self):
         """Update player position"""
@@ -289,7 +289,7 @@ class Level_01(Level):
         for platform in selected_platforms:
             coin = Coin()
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
-            coin.rect.y = platform[3] - 30
+            coin.rect.y = platform[3] - 40
             self.coin_list.add(coin)
 
 
@@ -328,7 +328,7 @@ class Level_02(Level):
         for platform in selected_platforms:
             coin = Coin()
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
-            coin.rect.y = platform[3] - 30
+            coin.rect.y = platform[3] - 40
             self.coin_list.add(coin)
 
 
@@ -368,7 +368,7 @@ class Level_03(Level):
         for platform in selected_platforms:
             coin = Coin()
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
-            coin.rect.y = platform[3] - 30
+            coin.rect.y = platform[3] - 40
             self.coin_list.add(coin)
 
         # Add spikes
@@ -430,7 +430,7 @@ class Level_04(Level):
         for platform in selected_platforms:
             coin = Coin()
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
-            coin.rect.y = platform[3] - 30
+            coin.rect.y = platform[3] - 40
             self.coin_list.add(coin)
 
         # Add spikes
@@ -475,7 +475,7 @@ class Level_05(Level):
         for platform in selected_platforms:
             coin = Coin()
             coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
-            coin.rect.y = platform[3] - 30
+            coin.rect.y = platform[3] - 40
             self.coin_list.add(coin)
 
         # Add spikes
@@ -485,6 +485,22 @@ class Level_05(Level):
                 spike.rect.x = platform[2] + random.randint(0, platform[0] - 20)
                 spike.rect.y = platform[3] - 20
                 self.spike_list.add(spike)
+
+
+def display_game_over(screen, font):
+    """Display game over screen"""
+    screen.fill(BLACK)
+    game_over_text = font.render("Game Over, You Lost", True, RED)
+    retry_text = font.render("Press C to try again or Q to quit", True, ORANGE)
+    screen.blit(
+        game_over_text,
+        (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, SCREEN_HEIGHT // 2 - 50),
+    )
+    screen.blit(
+        retry_text,
+        (SCREEN_WIDTH // 2 - retry_text.get_width() // 2, SCREEN_HEIGHT // 2 + 10),
+    )
+    pygame.display.flip()
 
 
 def main():
@@ -533,64 +549,92 @@ def main():
     # Font for displaying score, life, and level
     font = pygame.font.Font(None, 36)
 
+    game_over = False
+
     # Main game loop
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    player.go_left()
-                if event.key == pygame.K_RIGHT:
-                    player.go_right()
-                if event.key == pygame.K_UP:
-                    player.jump()
+            if game_over:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_c:
+                        # Restart the game
+                        player = Player()
+                        player.life = 5 + 1
+                        player.score = 0
+                        current_level_no = 0
+                        current_level = level_list[current_level_no]
+                        player.level = current_level
+                        player.rect.x = 240
+                        player.rect.y = SCREEN_HEIGHT - player.rect.height
+                        game_over = False
+                        pygame.mixer.music.play(-1)  # Restart music
+                    elif event.key == pygame.K_q:
+                        done = True
+            else:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        player.go_left()
+                    if event.key == pygame.K_RIGHT:
+                        player.go_right()
+                    if event.key == pygame.K_UP:
+                        player.jump()
 
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT and player.change_x < 0:
-                    player.stop()
-                if event.key == pygame.K_RIGHT and player.change_x > 0:
-                    player.stop()
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_LEFT and player.change_x < 0:
+                        player.stop()
+                    if event.key == pygame.K_RIGHT and player.change_x > 0:
+                        player.stop()
 
-        # Update player
-        active_sprite_list.update()
+        if not game_over:
+            # Update player
+            active_sprite_list.update()
 
-        # Update level
-        current_level.update()
+            # Update level
+            current_level.update()
 
-        # Shift world if player is near the right side
-        if player.rect.right >= 500:
-            diff = player.rect.right - 500
-            player.rect.right = 500
-            current_level.shift_world(-diff)
+            # Shift world if player is near the right side
+            if player.rect.right >= 500:
+                diff = player.rect.right - 500
+                player.rect.right = 500
+                current_level.shift_world(-diff)
 
-        # Shift world if player is near the left side
-        if player.rect.left <= 120:
-            diff = 120 - player.rect.left
-            player.rect.left = 120
-            current_level.shift_world(diff)
+            # Shift world if player is near the left side
+            if player.rect.left <= 120:
+                diff = 120 - player.rect.left
+                player.rect.left = 120
+                current_level.shift_world(diff)
 
-        # Go to next level if player reaches the end
-        current_position = player.rect.x + current_level.world_shift
-        if current_position < current_level.level_limit:
-            player.rect.x = 120
-            if current_level_no < len(level_list) - 1:
-                current_level_no += 1
-                current_level = level_list[current_level_no]
-                player.level = current_level
+            # Go to next level if player reaches the end
+            current_position = player.rect.x + current_level.world_shift
+            if current_position < current_level.level_limit:
+                player.rect.x = 120
+                if current_level_no < len(level_list) - 1:
+                    current_level_no += 1
+                    current_level = level_list[current_level_no]
+                    player.level = current_level
 
-        # Draw everything
-        current_level.draw(screen)
-        active_sprite_list.draw(screen)
+            # Draw everything
+            current_level.draw(screen)
+            active_sprite_list.draw(screen)
 
-        # Display score, life, and level
-        score_text = font.render(f"Coins: {player.score}", True, BLACK)
-        life_text = font.render(f"Life: {player.life}", True, BLACK)
-        level_text = font.render(f"Level: {current_level_no + 1}", True, BLACK)
-        screen.blit(score_text, (10, 10))
-        screen.blit(life_text, (10, 50))
-        screen.blit(level_text, (SCREEN_WIDTH // 2 - 50, 10))
+            # Display score, life, and level
+            score_text = font.render(f"Coins: {player.score}", True, BLACK)
+            life_text = font.render(f"Life: {player.life}", True, BLACK)
+            level_text = font.render(f"Level: {current_level_no + 1}", True, BLACK)
+            screen.blit(score_text, (10, 10))
+            screen.blit(life_text, (10, 50))
+            screen.blit(level_text, (SCREEN_WIDTH // 2 - 50, 10))
+
+            # Check for game over
+            if player.life <= 0:
+                game_over = True
+                pygame.mixer.music.stop()  # Stop music
+
+        if game_over:
+            display_game_over(screen, font)
 
         # Limit to 60 frames per second
         clock.tick(60)
