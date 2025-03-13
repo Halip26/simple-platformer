@@ -503,6 +503,29 @@ def display_game_over(screen, font):
     pygame.display.flip()
 
 
+def display_win_screen(screen, font):
+    """Display win screen"""
+    screen.fill(BLACK)
+    win_text = font.render("Congratulations, You Win!", True, GREEN)
+    congrats_text = font.render(
+        "You successfully collected more than 6 coins!", True, ORANGE
+    )
+    retry_text = font.render("Press C to try again or Q to quit", True, RED)
+    screen.blit(
+        win_text,
+        (SCREEN_WIDTH // 2 - win_text.get_width() // 2, SCREEN_HEIGHT // 2 - 50),
+    )
+    screen.blit(
+        congrats_text,
+        (SCREEN_WIDTH // 2 - congrats_text.get_width() // 2, SCREEN_HEIGHT // 2),
+    )
+    screen.blit(
+        retry_text,
+        (SCREEN_WIDTH // 2 - retry_text.get_width() // 2, SCREEN_HEIGHT // 2 + 50),
+    )
+    pygame.display.flip()
+
+
 def main():
     """Main program"""
     pygame.init()
@@ -550,6 +573,7 @@ def main():
     font = pygame.font.Font(None, 36)
 
     game_over = False
+    game_won = False
 
     # Main game loop
     while not done:
@@ -557,7 +581,7 @@ def main():
             if event.type == pygame.QUIT:
                 done = True
 
-            if game_over:
+            if game_over or game_won:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_c:
                         # Restart the game
@@ -570,6 +594,7 @@ def main():
                         player.rect.x = 240
                         player.rect.y = SCREEN_HEIGHT - player.rect.height
                         game_over = False
+                        game_won = False
                         pygame.mixer.music.play(-1)  # Restart music
                     elif event.key == pygame.K_q:
                         done = True
@@ -588,7 +613,7 @@ def main():
                     if event.key == pygame.K_RIGHT and player.change_x > 0:
                         player.stop()
 
-        if not game_over:
+        if not game_over and not game_won:
             # Update player
             active_sprite_list.update()
 
@@ -633,8 +658,16 @@ def main():
                 game_over = True
                 pygame.mixer.music.stop()  # Stop music
 
+            # Check for win condition
+            if player.score >= 6:
+                game_won = True
+                pygame.mixer.music.stop()  # Stop music
+
         if game_over:
             display_game_over(screen, font)
+
+        if game_won:
+            display_win_screen(screen, font)
 
         # Limit to 60 frames per second
         clock.tick(60)
