@@ -24,10 +24,20 @@ class Player(pygame.sprite.Sprite):
         """Initialize player"""
         super().__init__()
 
-        # Create a circular player image
-        radius = 20
-        self.image = pygame.Surface([radius * 2, radius * 2], pygame.SRCALPHA)
-        pygame.draw.circle(self.image, BLUE, (radius, radius), radius)
+        # Load the images
+        blob_normal = pygame.image.load("assets/blob.png").convert_alpha()
+        blob_jump = pygame.image.load("assets/blob-jump.png").convert_alpha()
+
+        # Scale images
+        self.image_right = pygame.transform.scale(blob_normal, (40, 40))
+        self.image_left = pygame.transform.flip(self.image_right, True, False)
+
+        self.image_jump_right = pygame.transform.scale(blob_jump, (50, 50))
+        self.image_jump_left = pygame.transform.flip(self.image_jump_right, True, False)
+
+        # Set initial state
+        self.image = self.image_right
+        self.direction = "R"
 
         # Set a reference to the image rect
         self.rect = self.image.get_rect()
