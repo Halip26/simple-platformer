@@ -122,30 +122,32 @@ class Player(pygame.sprite.Sprite):
         else:
             self.change_y += 0.35
 
-        # Check if on the ground
+        # check if on the ground
         if self.rect.y >= SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
             self.change_y = 0
             self.rect.y = SCREEN_HEIGHT - self.rect.height
 
     def jump(self):
         """Make the player jump"""
+        # check if the player is on a platform or the ground
         self.rect.y += 2
         platform_hit_list = pygame.sprite.spritecollide(
             self, self.level.platform_list, False
         )
         self.rect.y -= 2
 
-        # Check if the player is on a platform or the ground
         if len(platform_hit_list) > 0 or self.rect.bottom >= SCREEN_HEIGHT:
             self.change_y = -10
 
     def go_left(self):
         """Move player left"""
         self.change_x = -6
+        self.direction = "L"
 
     def go_right(self):
         """Move player right"""
         self.change_x = 6
+        self.direction = "R"
 
     def stop(self):
         """Stop player movement"""
