@@ -91,6 +91,22 @@ class Player(pygame.sprite.Sprite):
             # Stop vertical movement
             self.change_y = 0
 
+        # cek jika player menyentuh tanah
+        if self.rect.bottom >= SCREEN_HEIGHT:
+            on_ground = True
+
+        # perbarui gambar berdasarkan arah & lg melompat atau tidak
+        if not on_ground:
+            if self.direction == "R":
+                self.image = self.image_jump_right
+            else:
+                self.image = self.image_jump_left
+        else:
+            if self.direction == "R":
+                self.image = self.image_right
+            else:
+                self.image = self.image_left
+
         # Check if player touches lava
         if pygame.sprite.collide_rect(self, self.level.lava):
             self.life -= 1
