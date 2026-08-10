@@ -477,14 +477,15 @@ class Level_04(Level):
 class Level_05(Level):
     """Level 5"""
 
-    def __init__(self, player):
+    def __init__(self, player, coin_sound):
         """Create level 5"""
-        Level.__init__(self, player)
+        Level.__init__(self, player, coin_sound)
 
-        self.level_limit = -2000
+        self.level_limit = -1300
 
         # Platform layout
         level = [
+            [210, 30, 200, 550],
             [210, 30, 500, 500],
             [210, 30, 800, 400],
             [210, 30, 1100, 300],
