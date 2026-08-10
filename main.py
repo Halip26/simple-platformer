@@ -717,6 +717,13 @@ def main():
     pygame.mixer.music.set_volume(0.1)  # set volume to 10%
     pygame.mixer.music.play(-1)  # play music in an infinite loop
 
+    # Load sound effects
+    try:
+        coin_sound = pygame.mixer.Sound("assets/coin.mp3")
+    except pygame.error:
+        print("Warning: assets/coin.mp3 not found. Coin sound will not play.")
+        coin_sound = None
+
     # Set screen size
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
