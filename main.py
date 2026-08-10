@@ -214,13 +214,14 @@ class Spike(pygame.sprite.Sprite):
 class Level:
     """Generic level class"""
 
-    def __init__(self, player):
+    def __init__(self, player, coin_sound):
         """Initialize level"""
         self.platform_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
         self.coin_list = pygame.sprite.Group()
         self.player = player
         self.spike_list = pygame.sprite.Group()
+        self.coin_sound = coin_sound
 
         # Lava
         self.lava = Lava()
@@ -242,6 +243,8 @@ class Level:
         coin_hit_list = pygame.sprite.spritecollide(self.player, self.coin_list, True)
         for coin in coin_hit_list:
             self.player.score += 1
+            if self.coin_sound:
+                self.coin_sound.play()
 
         # Check for spike collision
         spike_hit_list = pygame.sprite.spritecollide(
@@ -325,9 +328,9 @@ class Level_01(Level):
 class Level_02(Level):
     """Level 2"""
 
-    def __init__(self, player):
+    def __init__(self, player, coin_sound):
         """Create Level 2"""
-        Level.__init__(self, player)
+        Level.__init__(self, player, coin_sound)
 
         self.level_limit = -2000
 
