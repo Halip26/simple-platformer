@@ -684,7 +684,7 @@ def display_win_screen(screen, font):
     screen.fill(BLACK)
     win_text = font.render("Congratulations, You Win!", True, GREEN)
     congrats_text = font.render(
-        "You successfully collected more than 6 coins!", True, ORANGE
+        "You successfully collected more than or equal 50 coins!", True, ORANGE
     )
     retry_text = font.render("Press C to try again or Q to quit", True, RED)
 
@@ -738,11 +738,15 @@ def main():
 
     # Create levels
     level_list = []
-    level_list.append(Level_01(player))
-    level_list.append(Level_02(player))
-    level_list.append(Level_03(player))
-    level_list.append(Level_04(player))
-    level_list.append(Level_05(player))
+    level_list.append(Level_01(player, coin_sound))
+    level_list.append(Level_02(player, coin_sound))
+    level_list.append(Level_03(player, coin_sound))
+    level_list.append(Level_04(player, coin_sound))
+    level_list.append(Level_05(player, coin_sound))
+    level_list.append(Level_06(player, coin_sound))
+    level_list.append(Level_06_2(player, coin_sound))
+    level_list.append(Level_07(player, coin_sound))
+    level_list.append(Level_08(player, coin_sound))
 
     # Set current level
     current_level_no = 0
@@ -867,7 +871,7 @@ def main():
                 pygame.mixer.music.stop()  # Stop music
 
             # Check for win condition
-            if player.score >= 6:
+            if current_level_no == len(level_list) - 1 and player.score >= 50:
                 game_won = True
                 pygame.mixer.music.stop()  # Stop music
 
