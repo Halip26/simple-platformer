@@ -668,6 +668,14 @@ def display_win_screen(screen, font):
         "You successfully collected more than 6 coins!", True, ORANGE
     )
     retry_text = font.render("Press C to try again or Q to quit", True, RED)
+
+    # add image background for win screen
+    background_image = pygame.image.load("assets/win_background.png").convert()
+    background_image = pygame.transform.scale(
+        background_image, (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
+    screen.blit(background_image, (0, 0))
+
     screen.blit(
         win_text,
         (SCREEN_WIDTH // 2 - win_text.get_width() // 2, SCREEN_HEIGHT // 2 - 50),
