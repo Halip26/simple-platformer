@@ -777,6 +777,16 @@ def main():
                         player.life = 5 + 1
                         player.score = 0
                         current_level_no = 0
+
+                        # recreate all levels with the new player
+                        level_list = []
+                        level_list.append(Level_01(player, coin_sound))
+                        level_list.append(Level_02(player, coin_sound))
+                        level_list.append(Level_03(player, coin_sound))
+                        level_list.append(Level_04(player, coin_sound))
+                        level_list.append(Level_05(player, coin_sound))
+                        level_list.append(Level_06(player, coin_sound))
+                        level_list.append(Level_07(player, coin_sound))
                         current_level = level_list[current_level_no]
                         player.level = current_level
                         player.rect.x = 240
