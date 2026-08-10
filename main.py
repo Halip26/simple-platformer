@@ -791,8 +791,15 @@ def main():
                         player.level = current_level
                         player.rect.x = 240
                         player.rect.y = SCREEN_HEIGHT - player.rect.height
+
+                        # clear old sprites and add new player
+                        active_sprite_list.empty()
+                        active_sprite_list.add(player)
                         game_over = False
                         game_won = False
+
+                        # initialize mixer again to prevent pygame error
+                        pygame.mixer.init()
                         pygame.mixer.music.play(-1)  # Restart music
                     elif event.key == pygame.K_q:
                         done = True
