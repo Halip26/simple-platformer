@@ -554,6 +554,8 @@ class Level_06(Level):
                 coin.rect.x = platform[2] + 20 + (coin_index * 40)
                 coin.rect.y = platform[3] - 40
                 self.coin_list.add(coin)
+
+
 class Level_06_2(Level):
     """Bonus level with 4 coins on every platform"""
 
@@ -631,6 +633,7 @@ class Level_07(Level):
                 spike.rect.x = platform[2] + random.randint(0, platform[0] - 20)
                 spike.rect.y = platform[3] - 20
                 self.spike_list.add(spike)
+
 
 class Level_08(Level):
     """Trap level with 4 spike on every platform"""
