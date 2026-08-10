@@ -431,9 +431,9 @@ class Level_03(Level):
 class Level_04(Level):
     """Level 4"""
 
-    def __init__(self, player):
+    def __init__(self, player, coin_sound):
         """Create level 4"""
-        Level.__init__(self, player)
+        Level.__init__(self, player, coin_sound)
 
         self.level_limit = -2000
 
