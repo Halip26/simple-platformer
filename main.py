@@ -500,6 +500,150 @@ class Level_05(Level):
                 self.spike_list.add(spike)
 
 
+class Level_06(Level):
+    """Bonus level with 4 coins on every platform"""
+
+    def __init__(self, player, coin_sound):
+        """Create bonus level"""
+        Level.__init__(self, player, coin_sound)
+
+        self.level_limit = -1300
+
+        # Platform layout
+        level = [
+            [210, 30, 250, 520],
+            [210, 30, 600, 430],
+            [210, 30, 950, 340],
+            [210, 30, 1300, 260],
+            [210, 30, 1650, 180],
+            [210, 30, 2000, 260],
+        ]
+
+        for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+            # Add 4 coins on every platform
+            for coin_index in range(4):
+                coin = Coin()
+                coin.rect.x = platform[2] + 20 + (coin_index * 40)
+                coin.rect.y = platform[3] - 40
+                self.coin_list.add(coin)
+class Level_06_2(Level):
+    """Bonus level with 4 coins on every platform"""
+
+    def __init__(self, player, coin_sound):
+        """Create bonus level"""
+        Level.__init__(self, player, coin_sound)
+
+        self.level_limit = -1300
+
+        # Platform layout
+        level = [
+            [210, 30, 250, 520],
+            [210, 30, 600, 430],
+            [210, 30, 950, 340],
+            [210, 30, 1300, 260],
+            [210, 30, 1650, 180],
+            [210, 30, 2000, 260],
+        ]
+
+        for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+            # Add 4 coins on every platform
+            for coin_index in range(4):
+                coin = Coin()
+                coin.rect.x = platform[2] + 20 + (coin_index * 40)
+                coin.rect.y = platform[3] - 40
+                self.coin_list.add(coin)
+
+
+class Level_07(Level):
+    """Level 7"""
+
+    def __init__(self, player, coin_sound):
+        """Create level 7"""
+        Level.__init__(self, player, coin_sound)
+
+        self.level_limit = -1400
+
+        # Platform layout
+        level = [
+            [210, 30, 300, 500],
+            [210, 30, 700, 400],
+            [210, 30, 1000, 300],
+            [210, 30, 1360, 380],
+            [210, 30, 1600, 250],
+            [210, 30, 1900, 350],
+        ]
+
+        for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+        # Add Coins (Randomly choose 1 to 4 platforms for coins)
+        num_coins = random.randint(1, min(4, len(level)))
+        selected_platforms = random.sample(level, num_coins)
+
+        for platform in selected_platforms:
+            coin = Coin()
+            coin.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+            coin.rect.y = platform[3] - 40
+            self.coin_list.add(coin)
+
+        # Add spikes
+        for platform in level:
+            if random.choice([True, False]):  # Randomly place spikes
+                spike = Spike()
+                spike.rect.x = platform[2] + random.randint(0, platform[0] - 20)
+                spike.rect.y = platform[3] - 20
+                self.spike_list.add(spike)
+
+class Level_08(Level):
+    """Trap level with 4 spike on every platform"""
+
+    def __init__(self, player, coin_sound):
+        """Create trap spike level"""
+        Level.__init__(self, player, coin_sound)
+
+        self.level_limit = -1300
+
+        # Platform layout
+        level = [
+            [210, 30, 250, 520],
+            [210, 30, 600, 430],
+            [210, 30, 950, 340],
+            [210, 30, 1300, 260],
+            [210, 30, 1650, 180],
+            [210, 30, 2000, 260],
+        ]
+
+        for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+            # Add 4 spikes on every platform
+            for spike_index in range(4):
+                spike = Spike()
+                spike.rect.x = platform[2] + 20 + (spike_index * 40)
+                spike.rect.y = platform[3] - 20
+                self.spike_list.add(spike)
+
+
 def display_game_over(screen, font):
     """Display game over screen"""
     screen.fill(BLACK)
