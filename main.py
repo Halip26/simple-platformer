@@ -727,17 +727,21 @@ def display_game_over(screen, font):
     pygame.display.flip()
 
 
-def display_win_screen(screen, font):
+def display_win_screen(screen, font, score):
     """Display win screen"""
     screen.fill(BLACK)
-    win_text = font.render("Congratulations, You Win!", True, GREEN)
+    win_text = font.render("Congratulations, Champion!", True, GREEN)
     congrats_text = font.render(
-        "You successfully collected more than or equal 50 coins!", True, ORANGE
+        "You've conquered the final level and mastered every challenge!", True, ORANGE
     )
-    retry_text = font.render("Press C to try again or Q to quit", True, RED)
+    bonus_text = font.render(
+        "Final victory unlocked: the Level 09 triumph!", True, YELLOW
+    )
+    score_text = font.render(f"Total Coins Collected: {score}", True, WHITE)
+    retry_text = font.render("Press C to play again or Q to quit", True, RED)
 
     # add image background for win screen
-    background_image = pygame.image.load("assets/win_background.png").convert()
+    background_image = pygame.image.load("assets/win_bg.jpg").convert()
     background_image = pygame.transform.scale(
         background_image, (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
@@ -745,15 +749,23 @@ def display_win_screen(screen, font):
 
     screen.blit(
         win_text,
-        (SCREEN_WIDTH // 2 - win_text.get_width() // 2, SCREEN_HEIGHT // 2 - 50),
+        (SCREEN_WIDTH // 2 - win_text.get_width() // 2, SCREEN_HEIGHT // 2 - 100),
     )
     screen.blit(
         congrats_text,
-        (SCREEN_WIDTH // 2 - congrats_text.get_width() // 2, SCREEN_HEIGHT // 2),
+        (SCREEN_WIDTH // 2 - congrats_text.get_width() // 2, SCREEN_HEIGHT // 2 - 50),
+    )
+    screen.blit(
+        bonus_text,
+        (SCREEN_WIDTH // 2 - bonus_text.get_width() // 2, SCREEN_HEIGHT // 2 - 10),
+    )
+    screen.blit(
+        score_text,
+        (SCREEN_WIDTH // 2 - score_text.get_width() // 2, SCREEN_HEIGHT // 2 + 30),
     )
     screen.blit(
         retry_text,
-        (SCREEN_WIDTH // 2 - retry_text.get_width() // 2, SCREEN_HEIGHT // 2 + 50),
+        (SCREEN_WIDTH // 2 - retry_text.get_width() // 2, SCREEN_HEIGHT // 2 + 70),
     )
     pygame.display.flip()
 
