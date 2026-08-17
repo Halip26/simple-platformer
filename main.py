@@ -798,15 +798,16 @@ def main():
 
     # Create levels
     level_list = []
-    level_list.append(Level_01(player, coin_sound))
+    level_list.append(Level_01(player, coin_sound)) # only show level 1 for testing
     level_list.append(Level_02(player, coin_sound))
     level_list.append(Level_03(player, coin_sound))
     level_list.append(Level_04(player, coin_sound))
-    level_list.append(Level_05(player, coin_sound))
-    level_list.append(Level_06(player, coin_sound))
-    level_list.append(Level_06_2(player, coin_sound))
-    level_list.append(Level_07(player, coin_sound))
-    level_list.append(Level_08(player, coin_sound))
+    # level_list.append(Level_05(player, coin_sound))
+    # level_list.append(Level_06(player, coin_sound))
+    # level_list.append(Level_06_2(player, coin_sound))
+    # level_list.append(Level_07(player, coin_sound))
+    # level_list.append(Level_08(player, coin_sound))
+    # level_list.append(Level_09(player, coin_sound))
 
     # Set current level
     current_level_no = 0
@@ -853,7 +854,10 @@ def main():
                         level_list.append(Level_04(player, coin_sound))
                         level_list.append(Level_05(player, coin_sound))
                         level_list.append(Level_06(player, coin_sound))
+                        level_list.append(Level_06_2(player, coin_sound))
                         level_list.append(Level_07(player, coin_sound))
+                        level_list.append(Level_08(player, coin_sound))
+                        level_list.append(Level_09(player, coin_sound))
                         current_level = level_list[current_level_no]
                         player.level = current_level
                         player.rect.x = 240
@@ -930,16 +934,17 @@ def main():
                 game_over = True
                 pygame.mixer.music.stop()  # Stop music
 
-            # Check for win condition
-            if current_level_no == len(level_list) - 1 and player.score >= 50:
-                game_won = True
-                pygame.mixer.music.stop()  # Stop music
+            # Check for win condition when the final level is completed
+            if current_level_no == len(level_list) - 1:
+                if current_position < current_level.level_limit:
+                    game_won = True
+                    pygame.mixer.music.stop()  # Stop music
 
         if game_over:
             display_game_over(screen, font)
 
         if game_won:
-            display_win_screen(screen, font)
+            display_win_screen(screen, font, player.score)
 
         # Limit to 60 frames per second
         clock.tick(60)
