@@ -669,6 +669,48 @@ class Level_08(Level):
                 self.spike_list.add(spike)
 
 
+class Level_09(Level):
+    """Final level with coins and spike gauntlet"""
+
+    def __init__(self, player, coin_sound):
+        """Create final level"""
+        Level.__init__(self, player, coin_sound)
+
+        self.level_limit = -1800
+
+        # Platform layout
+        level = [
+            [210, 30, 250, 520],
+            [210, 30, 520, 450],
+            [210, 30, 820, 380],
+            [210, 30, 1120, 320],
+            [210, 30, 1420, 260],
+            [210, 30, 1720, 220],
+            [210, 30, 2020, 180],
+            [210, 30, 2320, 220],
+        ]
+
+        for platform in level:
+            block = Platform(platform[0], platform[1])
+            block.rect.x = platform[2]
+            block.rect.y = platform[3]
+            block.player = self.player
+            self.platform_list.add(block)
+
+            # Add 2 coins and 2 spikes on every platform
+            for coin_index in range(2):
+                coin = Coin()
+                coin.rect.x = platform[2] + 30 + (coin_index * 60)
+                coin.rect.y = platform[3] - 40
+                self.coin_list.add(coin)
+
+            for spike_index in range(2):
+                spike = Spike()
+                spike.rect.x = platform[2] + 120 + (spike_index * 40)
+                spike.rect.y = platform[3] - 20
+                self.spike_list.add(spike)
+
+
 def display_game_over(screen, font):
     """Display game over screen"""
     screen.fill(BLACK)
